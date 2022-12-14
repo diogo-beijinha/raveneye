@@ -1,11 +1,13 @@
 import requests
 
+wordlist_path = input("Insert Wordlist Path: ")
+
 def directory_scanning(ip_addr):
-    prefix_array = ["php", "PYTHON"]
-    prefix_200_array = []
+    with open(wordlist_path) as f:
+        prefix_array = [line.split() for line in list(f)]
+    prefix_not404_array = []
     for prefix in prefix_array:
-        dir = requests.get(f'https://{ip_addr}/' + prefix)
-        print(dir.status_code)
-        if dir.status_code == 200:
-            prefix_200_array.append(prefix)
-    print(prefix_200_array)
+        dir = requests.get(f'https://{ip_addr}/' + str(prefix))
+        if dir.status_code != 404:
+            prefix_not404_array.append(prefix)
+    print(prefix_not404_array)

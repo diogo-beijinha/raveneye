@@ -1,9 +1,9 @@
 import nmap
 from dir_scan import directory_scanning
 
-dir_scan = False
 
 def port_scanning(ip_addr, ports):
+    scan_dirs = False
     nm = nmap.PortScanner()
     nm.scan(ip_addr, ports)
     nm.command_line()
@@ -35,7 +35,16 @@ def port_scanning(ip_addr, ports):
             for port in lport:
                 print('port : %s\tstate : %s' % (port, nm[host][proto][port]['state']))
                 if proto == "80" or proto == "8080":
-                    dir_scan = True
+                    scan_dirs = True
     
-    if dir_scan == True:
-        directory_scanning(ip_addr)
+                if proto == "21":
+                    pass
+                    # TEST FTP ANONYMOUS CONNECTION HERE
+                if proto == "445": #SMB sometimes uses port 139(implement later)
+                    pass
+                    # TEST SMB ANONYMOUS CONNECTION HERE
+
+    if scan_dirs == True:
+        dir_option = input("HTTP port open! Would you like to enumerate directories? (Y/N)")
+        if dir_option == "Y" or dir_option == "y":
+            directory_scanning(ip_addr)
